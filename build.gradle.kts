@@ -1,12 +1,10 @@
-val kotlinVersion = "1.8.20"
-
 plugins {
     id("java")
-    kotlin("jvm") version kotlinVersion
-    id("com.github.johnrengelman.shadow") version "8.11"
-    id("xyz.jpenilla.run-paper") version " 2.0.1"
+    kotlin("jvm") version "1.8.20"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("xyz.jpenilla.run-paper") version "2.1.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
-    kotlin("plugin.serialization") version kotlinVersion
+    kotlin("plugin.serialization") version "1.8.21"
 }
 
 group = "dev.nikomaru"
@@ -14,7 +12,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://jitpack.io")
@@ -33,13 +31,14 @@ dependencies {
 
     compileOnly("com.github.MilkBowl", "VaultAPI", vaultVersion)
 
-    implementation("com.github.Revxrsal.Lamp","common",lampVersion)
-    implementation("com.github.Revxrsal.Lamp","bukkit",lampVersion)
+    implementation("com.github.Revxrsal.Lamp", "common", lampVersion)
+    implementation("com.github.Revxrsal.Lamp", "bukkit", lampVersion)
 
-    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", kotlinVersion)
+    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.7.1")
 
     implementation("com.github.shynixn.mccoroutine", "mccoroutine-bukkit-api", mccoroutineVersion)
     implementation("com.github.shynixn.mccoroutine", "mccoroutine-bukkit-core", mccoroutineVersion)
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 java {
@@ -74,6 +73,8 @@ bukkit {
     main = "$group.template.Template"  // need to change
 
     apiVersion = "1.19"
-    libraries = listOf("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0",
-        "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
+    libraries = listOf(
+        "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0",
+        "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0"
+    )
 }
