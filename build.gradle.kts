@@ -1,12 +1,10 @@
-val kotlinVersion = "1.8.20"
-
 plugins {
     id("java")
-    kotlin("jvm") version kotlinVersion
-    id("com.github.johnrengelman.shadow") version "8.11"
-    id("xyz.jpenilla.run-paper") version " 2.0.1"
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
-    kotlin("plugin.serialization") version kotlinVersion
+    kotlin("jvm") version "1.9.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("xyz.jpenilla.run-paper") version "2.1.0"
+    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 group = "dev.nikomaru"
@@ -21,8 +19,8 @@ repositories {
     maven("https://plugins.gradle.org/m2/")
     maven("https://repo.incendo.org/content/repositories/snapshots")
 }
-val paperVersion = "1.19.4-R0.1-SNAPSHOT"
-val lampVersion = "3.1.5"
+val paperVersion = "1.20.1-R0.1-SNAPSHOT"
+val cloudVersion = "1.7.1"
 val vaultVersion = "1.7"
 val mccoroutineVersion = "2.11.0"
 
@@ -33,36 +31,45 @@ dependencies {
 
     compileOnly("com.github.MilkBowl", "VaultAPI", vaultVersion)
 
-    implementation("com.github.Revxrsal.Lamp","common",lampVersion)
-    implementation("com.github.Revxrsal.Lamp","bukkit",lampVersion)
+    implementation("cloud.commandframework", "cloud-core", cloudVersion)
+    implementation("cloud.commandframework", "cloud-kotlin-extensions", cloudVersion)
+    implementation("cloud.commandframework", "cloud-paper", cloudVersion)
+    implementation("cloud.commandframework", "cloud-annotations", cloudVersion)
+    implementation("cloud.commandframework", "cloud-kotlin-coroutines-annotations", cloudVersion)
+    implementation("cloud.commandframework", "cloud-kotlin-coroutines", cloudVersion)
 
-    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", kotlinVersion)
+    library("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.7.1")
+    implementation("org.jetbrains.kotlinx", "kotlinx-serialization-json", "1.5.1")
 
-    implementation("com.github.shynixn.mccoroutine", "mccoroutine-bukkit-api", mccoroutineVersion)
-    implementation("com.github.shynixn.mccoroutine", "mccoroutine-bukkit-core", mccoroutineVersion)
+    library("com.github.shynixn.mccoroutine", "mccoroutine-bukkit-api", mccoroutineVersion)
+    library("com.github.shynixn.mccoroutine", "mccoroutine-bukkit-core", mccoroutineVersion)
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+
+toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = "17"
-        kotlinOptions.javaParameters = true
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "17"
-    }
-    build {
-        dependsOn(shadowJar)
-    }
+compileKotlin {
+kotlinOptions.jvmTarget = "17"
+kotlinOptions.javaParameters = true
+}
+compileTestKotlin {
+kotlinOptions.jvmTarget = "17"
+}
+build {
+dependsOn(shadowJar)
+}
+}
+tasks.withType<JavaCompile>().configureEach {
+options.encoding = "UTF-8"
 }
 
 tasks {
-    runServer {
-        minecraftVersion("1.19.4")
-    }
+runServer {
+minecraftVersion("1.20.1")
+}
 }
 
 
@@ -73,7 +80,7 @@ bukkit {
 
     main = "$group.template.Template"  // need to change
 
-    apiVersion = "1.19"
+    apiVersion = "1.20"
     libraries = listOf("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0",
         "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
 }
