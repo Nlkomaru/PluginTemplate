@@ -1,14 +1,19 @@
 plugins {
     id("java")
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "1.9.20"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("xyz.jpenilla.run-paper") version "2.1.0"
+    id("xyz.jpenilla.run-paper") version "2.2.2"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    kotlin("plugin.serialization") version "1.9.0"
+    kotlin("plugin.serialization") version "1.9.20"
 }
 
 group = "dev.nikomaru"
 version = "1.0-SNAPSHOT"
+
+fun captureVersion(dependency: Dependency): String {
+    return dependency.version ?: throw IllegalArgumentException("Version not found for $dependency")
+}
+
 
 repositories {
     mavenCentral()
@@ -23,9 +28,9 @@ repositories {
 
 
 dependencies {
-    val paperVersion = "1.20.1-R0.1-SNAPSHOT"
-    val mccoroutineVersion = "2.11.0"
-    val lampVersion = "3.1.5"
+    val paperVersion = captureVersion(implementation("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")!!)
+    val mccoroutineVersion = captureVersion(implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")!!)
+    val lampVersion = captureVersion(implementation("com.github.Revxrsal.Lamp:common:3.1.5")!!)
 
     compileOnly("io.papermc.paper", "paper-api", paperVersion)
 
