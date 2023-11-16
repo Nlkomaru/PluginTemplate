@@ -1,13 +1,9 @@
 package dev.nikomaru.template
 
-import cloud.commandframework.annotations.AnnotationParser
-import cloud.commandframework.bukkit.CloudBukkitCapabilities
-import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator
-import cloud.commandframework.kotlin.coroutines.annotations.installCoroutineSupport
-import cloud.commandframework.meta.SimpleCommandMeta
-import cloud.commandframework.paper.PaperCommandManager
-import org.bukkit.command.CommandSender
+import dev.nikomaru.template.commands.HelpCommand
 import org.bukkit.plugin.java.JavaPlugin
+import revxrsal.commands.bukkit.BukkitCommandHandler
+import revxrsal.commands.ktx.supportSuspendFunctions
 
 class Template : JavaPlugin() {
 
@@ -26,24 +22,28 @@ class Template : JavaPlugin() {
     }
 
     fun setCommand() {
-        val commandManager: PaperCommandManager<CommandSender> = PaperCommandManager(
-            this,
-            AsynchronousCommandExecutionCoordinator.newBuilder<CommandSender>().build(),
-            java.util.function.Function.identity(),
-            java.util.function.Function.identity()
-        )
+        val handler = BukkitCommandHandler.create(this)
 
+        handler.setSwitchPrefix("--")
+        handler.setFlagPrefix("--")
+        handler.supportSuspendFunctions()
 
-        if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
-            commandManager.registerAsynchronousCompletions()
+        handler.setHelpWriter { command, actor ->
+            java.lang.String.format(
+                """
+                <color:yellow>コマンド: <color:gray>%s
+                <color:yellow>使用方法: <color:gray>%s
+                <color:yellow>説明: <color:gray>%s
+                
+                """.trimIndent(),
+                command.path.toList(),
+                command.usage,
+                command.description,
+            )
         }
 
-        val annotationParser = AnnotationParser(commandManager, CommandSender::class.java) {
-            SimpleCommandMeta.empty()
-        }.installCoroutineSupport()
-
-        with(annotationParser) {
-            // write your command here
+        with(handler) {
+            register(HelpCommand())
         }
     }
 }
