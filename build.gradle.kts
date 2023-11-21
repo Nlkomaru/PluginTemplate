@@ -30,7 +30,7 @@ repositories {
 dependencies {
     val paperVersion = captureVersion(implementation("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")!!)
     val mccoroutineVersion = captureVersion(implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.13.0")!!)
-    val lampVersion = captureVersion(implementation("com.github.Revxrsal.Lamp:common:3.1.7")!!)
+    val lampVersion = captureVersion(implementation("com.github.Revxrsal.Lamp:common:3.1.8")!!)
 
     compileOnly("io.papermc.paper", "paper-api", paperVersion)
 
