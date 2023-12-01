@@ -38,7 +38,7 @@ dependencies {
     val serializationVersion = "1.6.1"
     val junitVersion = "5.10.1"
     val mockkVersion = "1.13.8"
-    val mockBukkitVersion = "3.47.0"
+    val mockBukkitVersion = "3.56.0"
 
 
     compileOnly("io.papermc.paper:paper-api:$paperVersion")
