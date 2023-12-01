@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
     id("java")
     kotlin("jvm") version "1.9.20"
@@ -7,7 +9,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.20"
 }
 
-group = "dev.nikomaru"
+group = "dev.nikomaru" //TODO need to change
 version = "1.0-SNAPSHOT"
 
 fun captureVersion(dependency: Dependency): String {
@@ -28,22 +30,38 @@ repositories {
 
 
 dependencies {
-    val paperVersion = captureVersion(implementation("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")!!)
-    val mccoroutineVersion = captureVersion(implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.13.0")!!)
-    val lampVersion = captureVersion(implementation("com.github.Revxrsal.Lamp:common:3.1.7")!!)
+    val paperVersion = "1.20.2-R0.1-SNAPSHOT"
+    val mccoroutineVersion = "2.13.0"
+    val lampVersion = "3.1.8"
+    val koinVersion = "3.5.0"
+    val coroutineVersion = "1.7.3"
+    val serializationVersion = "1.6.1"
+    val junitVersion = "5.10.1"
+    val mockkVersion = "1.13.8"
+    val mockBukkitVersion = "3.47.0"
 
-    compileOnly("io.papermc.paper", "paper-api", paperVersion)
+
+    compileOnly("io.papermc.paper:paper-api:$paperVersion")
 
     library(kotlin("stdlib"))
 
-    implementation("com.github.Revxrsal.Lamp","common",lampVersion)
-    implementation("com.github.Revxrsal.Lamp","bukkit",lampVersion)
+    implementation("com.github.Revxrsal.Lamp:common:$lampVersion")
+    implementation("com.github.Revxrsal.Lamp:bukkit:$lampVersion")
 
-    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.7.3")
-    implementation("org.jetbrains.kotlinx", "kotlinx-serialization-json", "1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
 
-    library("com.github.shynixn.mccoroutine", "mccoroutine-bukkit-api", mccoroutineVersion)
-    library("com.github.shynixn.mccoroutine", "mccoroutine-bukkit-core", mccoroutineVersion)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
+
+    library("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:$mccoroutineVersion")
+    library("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:$mccoroutineVersion")
+
+    implementation("io.insert-koin:koin-core:$koinVersion")
+
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:$mockBukkitVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
+    testImplementation("io.insert-koin:koin-test:$koinVersion")
+    testImplementation("io.insert-koin:koin-test-junit5:$koinVersion")
 }
 
 java {
@@ -61,25 +79,30 @@ tasks {
     build {
         dependsOn(shadowJar)
     }
-}
-tasks.withType<JavaCompile>().configureEach {
-    options.encoding = "UTF-8"
-}
-
-tasks {
     runServer {
         minecraftVersion("1.20.2")
+    }
+    withType<JavaCompile>().configureEach {
+        options.encoding = "UTF-8"
+    }
+    test {
+        useJUnitPlatform()
+        testLogging {
+            showStandardStreams = true
+            events("passed", "skipped", "failed")
+            exceptionFormat = TestExceptionFormat.FULL
+        }
     }
 }
 
 
 
 bukkit {
-    name = "Template" // need to change
+    name = "Template" //TODO need to change
     version = "miencraft_plugin_version"
-    website = "https://github.com/Nlkomaru/NoticeTemplate"  // need to change
+    website = "https://github.com/Nlkomaru/NoticeTemplate"  //TODO need to change
 
-    main = "$group.template.Template"  // need to change
+    main = "$group.template.Template"  //TODO need to change
 
     apiVersion = "1.20"
 }

@@ -1,4 +1,4 @@
-rootProject.name = "NoticeTemplate"
+rootProject.name = "PluginTemplate" //TODO need to change
 
 pluginManagement {
     repositories {

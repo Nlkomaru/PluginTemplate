@@ -2,10 +2,12 @@ package dev.nikomaru.template
 
 import dev.nikomaru.template.commands.HelpCommand
 import org.bukkit.plugin.java.JavaPlugin
+import org.koin.core.context.GlobalContext
+import org.koin.dsl.module
 import revxrsal.commands.bukkit.BukkitCommandHandler
 import revxrsal.commands.ktx.supportSuspendFunctions
 
-class Template : JavaPlugin() {
+open class Template : JavaPlugin() {
 
     companion object {
         lateinit var plugin: Template
@@ -15,8 +17,18 @@ class Template : JavaPlugin() {
         // Plugin startup logic
         plugin = this
         setCommand()
+        setupKoin()
     }
 
+    private fun setupKoin() {
+        val appModule = module {
+            single<Template> { this@Template }
+        }
+
+        GlobalContext.getOrNull() ?: GlobalContext.startKoin {
+            modules(appModule)
+        }
+    }
     override fun onDisable() {
         // Plugin shutdown logic
     }
@@ -31,9 +43,9 @@ class Template : JavaPlugin() {
         handler.setHelpWriter { command, actor ->
             java.lang.String.format(
                 """
-                <color:yellow>コマンド: <color:gray>%s
-                <color:yellow>使用方法: <color:gray>%s
-                <color:yellow>説明: <color:gray>%s
+                <color:yellow>command: <color:gray>%s
+                <color:yellow>usage: <color:gray>%s
+                <color:yellow>description: <color:gray>%s
                 
                 """.trimIndent(),
                 command.path.toList(),
