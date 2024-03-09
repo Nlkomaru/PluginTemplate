@@ -1,5 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-
 plugins {
     id("java")
     kotlin("jvm") version "1.9.21"
@@ -36,10 +34,6 @@ dependencies {
     val koinVersion = "3.5.0"
     val coroutineVersion = "1.7.3"
     val serializationVersion = "1.6.2"
-    val junitVersion = "5.10.1"
-    val mockkVersion = "1.13.8"
-    val mockBukkitVersion = "3.56.0"
-
 
     compileOnly("io.papermc.paper:paper-api:$paperVersion")
 
@@ -56,12 +50,6 @@ dependencies {
     library("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:$mccoroutineVersion")
 
     implementation("io.insert-koin:koin-core:$koinVersion")
-
-    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:$mockBukkitVersion")
-    testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
-    testImplementation("io.insert-koin:koin-test:$koinVersion")
-    testImplementation("io.insert-koin:koin-test-junit5:$koinVersion")
 }
 
 java {
@@ -80,18 +68,10 @@ tasks {
         dependsOn(shadowJar)
     }
     runServer {
-        minecraftVersion("1.20.2")
+        minecraftVersion("1.20.4")
     }
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
-    }
-    test {
-        useJUnitPlatform()
-        testLogging {
-            showStandardStreams = true
-            events("passed", "skipped", "failed")
-            exceptionFormat = TestExceptionFormat.FULL
-        }
     }
 }
 
