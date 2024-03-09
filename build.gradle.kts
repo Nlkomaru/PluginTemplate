@@ -1,10 +1,12 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
     id("java")
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "1.9.22"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("xyz.jpenilla.run-paper") version "2.2.2"
+    id("xyz.jpenilla.run-paper") version "2.2.3"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    kotlin("plugin.serialization") version "1.9.21"
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 group = "dev.nikomaru" //TODO need to change
@@ -28,12 +30,13 @@ repositories {
 
 
 dependencies {
-    val paperVersion = "1.20.2-R0.1-SNAPSHOT"
-    val mccoroutineVersion = "2.13.0"
-    val lampVersion = "3.1.8"
-    val koinVersion = "3.5.0"
+    val paperVersion = "1.20.4-R0.1-SNAPSHOT"
+    val mccoroutineVersion = "2.14.0"
+    val lampVersion = "3.1.9"
+    val koinVersion = "3.5.3"
     val coroutineVersion = "1.7.3"
     val serializationVersion = "1.6.2"
+
 
     compileOnly("io.papermc.paper:paper-api:$paperVersion")
 
