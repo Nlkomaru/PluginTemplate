@@ -1,12 +1,13 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
-    id("java")
-    kotlin("jvm") version "1.9.22"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("xyz.jpenilla.run-paper") version "2.2.3"
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    kotlin("plugin.serialization") version "1.9.22"
+    java
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.run.paper)
+    alias(libs.plugins.resource.factory)
 }
 
 group = "dev.nikomaru" //TODO need to change
@@ -30,62 +31,66 @@ repositories {
 
 
 dependencies {
-    val paperVersion = "1.20.4-R0.1-SNAPSHOT"
-    val mccoroutineVersion = "2.14.0"
-    val lampVersion = "3.1.9"
-    val koinVersion = "3.5.3"
-    val coroutineVersion = "1.7.3"
-    val serializationVersion = "1.6.2"
+    compileOnly(libs.paper.api)
 
+    implementation(kotlin("stdlib"))
 
-    compileOnly("io.papermc.paper:paper-api:$paperVersion")
+    implementation(libs.bundles.commands)
 
-    library(kotlin("stdlib"))
+    implementation(libs.bundles.coroutines)
 
-    implementation("com.github.Revxrsal.Lamp:common:$lampVersion")
-    implementation("com.github.Revxrsal.Lamp:bukkit:$lampVersion")
+    implementation(libs.serialization.json)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-
-    library("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:$mccoroutineVersion")
-    library("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:$mccoroutineVersion")
-
-    implementation("io.insert-koin:koin-core:$koinVersion")
+    implementation(libs.koin.core)
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+kotlin {
+    jvmToolchain {
+        (this).languageVersion.set(JavaLanguageVersion.of(21))
+    }
+    jvmToolchain(21)
 }
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "17"
-        kotlinOptions.javaParameters = true
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
+        compilerOptions.javaParameters = true
+        compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_2_0)
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "17"
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
     }
     build {
         dependsOn(shadowJar)
     }
     runServer {
-        minecraftVersion("1.20.4")
+        minecraftVersion("1.20.6")
     }
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
     }
 }
 
+sourceSets.main {
+    resourceFactory {
+        bukkitPluginYaml {
+            name = rootProject.name
+            version = "versionPlaceholder"
+            website = "https://github.com/Nlkomaru/PluginTemplate"  //TODO need to change
+            main = "$group.template.Template"  //TODO need to change
+            apiVersion = "1.20"
+            libraries = libs.bundles.coroutines.asString()
+        }
+    }
+}
 
+fun Provider<MinimalExternalModuleDependency>.asString(): String {
+    val dependency = this.get()
+    return dependency.module.toString() + ":" + dependency.versionConstraint.toString()
+}
 
-bukkit {
-    name = "Template" //TODO need to change
-    version = "miencraft_plugin_version"
-    website = "https://github.com/Nlkomaru/NoticeTemplate"  //TODO need to change
-
-    main = "$group.template.Template"  //TODO need to change
-
-    apiVersion = "1.20"
+fun Provider<ExternalModuleDependencyBundle>.asString(): List<String> {
+    return this.get().map { dependency ->
+        "${dependency.group}:${dependency.name}:${dependency.version}"
+    }
 }

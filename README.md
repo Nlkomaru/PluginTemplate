@@ -1,4 +1,4 @@
-# NoticeTemplate
+# PluginTemplate
 
 Please delete this README after copying
 
