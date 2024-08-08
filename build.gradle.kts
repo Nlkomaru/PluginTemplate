@@ -64,7 +64,7 @@ tasks {
         dependsOn(shadowJar)
     }
     runServer {
-        minecraftVersion("1.20.6")
+        minecraftVersion("1.21")
     }
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
