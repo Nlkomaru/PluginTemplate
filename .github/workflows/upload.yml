@@ -20,19 +20,19 @@ jobs:
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build -x test
-
-      - name: Rename jar
-        run: mv ./build/libs/PluginTemplate-1.0-SNAPSHOT-all.jar ./build/libs/PluginTemplate_${{ github.event.release.tag_name }}.jar
-
       - name: Set plugin version
         run: sed -i "s/versionPlaceholder/${{ github.event.release.tag_name }}/g" ./build.gradle.kts
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Rename jar
+        run: mv ./build/libs/PluginTemplate-1.0-SNAPSHOT-all.jar ./build/libs/PluginTemplate_${{ github.event.release.tag_name }}.jar #TODO Change PluginTemplate to your plugin name
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
-          files: ./build/libs/PluginTemplate_${{ github.event.release.tag_name }}.jar
+          files: ./build/libs/PluginTemplate_${{ github.event.release.tag_name }}.jar #TODO Change PluginTemplate to your plugin name
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
