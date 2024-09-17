@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "dev.nikomaru" //TODO need to change
-version = "1.0-SNAPSHOT"
+version = "1.0-SNAPSHOT" //Don't change
 
 fun captureVersion(dependency: Dependency): String {
     return dependency.version ?: throw IllegalArgumentException("Version not found for $dependency")
@@ -75,7 +75,7 @@ sourceSets.main {
     resourceFactory {
         bukkitPluginYaml {
             name = rootProject.name
-            version = "versionPlaceholder"
+            version = "versionPlaceholder" //Don't change
             website = "https://github.com/Nlkomaru/PluginTemplate"  //TODO need to change
             main = "$group.template.Template"  //TODO need to change
             apiVersion = "1.20"
