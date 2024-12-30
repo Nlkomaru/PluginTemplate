@@ -1,6 +1,6 @@
 [versions]
 paper = "1.21.4-R0.1-SNAPSHOT"
-koinVersion = "4.0.0"
+koinVersion = "4.0.1"
 mccoroutine = "2.20.0"
 coroutine = "1.10.1"
 serialization = "1.7.3"
