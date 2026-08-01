@@ -10,17 +10,16 @@ plugins {
     alias(libs.plugins.resource.factory)
 }
 
-group = "dev.nikomaru" //TODO need to change
-version = "1.0-SNAPSHOT" //Don't change
+group = "dev.nikomaru"
+version = "1.0-SNAPSHOT"
 
 fun captureVersion(dependency: Dependency): String {
     return dependency.version ?: throw IllegalArgumentException("Version not found for $dependency")
 }
 
-
 repositories {
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://jitpack.io")
@@ -31,15 +30,15 @@ repositories {
 
 
 dependencies {
-    compileOnly(libs.paper.api)
-
     implementation(kotlin("stdlib"))
+
+    compileOnly(libs.paper.api)
 
     implementation(libs.bundles.commands)
 
-    implementation(libs.bundles.coroutines)
+    implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.serialization.json)
+    implementation(libs.bundles.coroutines)
 
     implementation(libs.koin.core)
 }
@@ -64,7 +63,7 @@ tasks {
         dependsOn(shadowJar)
     }
     runServer {
-        minecraftVersion("1.21")
+        minecraftVersion("1.21.8")
     }
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
@@ -77,8 +76,8 @@ sourceSets.main {
             name = rootProject.name
             version = "versionPlaceholder" //Don't change
             website = "https://github.com/Nlkomaru/PluginTemplate"  //TODO need to change
-            main = "$group.template.Template"  //TODO need to change
-            apiVersion = "1.20"
+            main = "$group.hardcoresupport.HardcoreSupport"  //TODO need to change
+            apiVersion = "1.21"
             libraries = libs.bundles.coroutines.asString()
         }
     }

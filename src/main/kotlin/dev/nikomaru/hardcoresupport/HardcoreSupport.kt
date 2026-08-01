@@ -1,6 +1,8 @@
 package dev.nikomaru.hardcoresupport
 
-import dev.nikomaru.hardcoresupport.commands.HelpCommand
+import dev.nikomaru.hardcoresupport.commands.HardcoreSupportCommand
+import dev.nikomaru.hardcoresupport.listener.DeathListener
+import dev.nikomaru.hardcoresupport.listener.JoinListener
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.annotations.AnnotationParser
@@ -22,6 +24,7 @@ open class HardcoreSupport : JavaPlugin() {
         plugin = this
         setCommand()
         setupKoin()
+        registerListeners()
     }
 
     private fun setupKoin() {
@@ -32,6 +35,11 @@ open class HardcoreSupport : JavaPlugin() {
         GlobalContext.getOrNull() ?: GlobalContext.startKoin {
             modules(appModule)
         }
+    }
+
+    private fun registerListeners() {
+        server.pluginManager.registerEvents(DeathListener(), this)
+        server.pluginManager.registerEvents(JoinListener(), this)
     }
 
     override fun onDisable() {
@@ -48,6 +56,6 @@ open class HardcoreSupport : JavaPlugin() {
 
         val annotationParser = AnnotationParser<CommandSender>(commandManager, CommandSender::class.java)
 
-        annotationParser.parse(HelpCommand())
+        annotationParser.parse(HardcoreSupportCommand())
     }
 }

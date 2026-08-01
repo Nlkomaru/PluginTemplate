@@ -1,31 +1,36 @@
 [versions]
-paper = "1.21.4-R0.1-SNAPSHOT"
-koinVersion = "4.0.1"
+paper = "1.21.5-R0.1-SNAPSHOT"
+koinVersion = "4.0.3"
 mccoroutine = "2.20.0"
 coroutine = "1.10.1"
-serialization = "1.7.3"
 cloud = "2.1.0-SNAPSHOT"
 cloudPaper = "2.0.0-SNAPSHOT"
+serialization = "1.8.1"
 
 [libraries]
 paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
-cloud = { module = "org.incendo:cloud-core", version.ref = "cloud" }
-cloud-annotations = { module = "org.incendo:cloud-annotations", version.ref = "cloud" }
-cloudPaper = { module = "org.incendo:cloud-paper", version.ref = "cloudPaper" }
-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+
+cloud = { group = "org.incendo", name = "cloud-core", version.ref = "cloud" }
+cloud-annotations = { group = "org.incendo", name = "cloud-annotations", version.ref = "cloud" }
+cloud-kotlin-coroutines-annotations = { group = "org.incendo", name = "cloud-kotlin-coroutines-annotations", version.ref = "cloud" }
+cloudPaper = { group = "org.incendo", name = "cloud-paper", version.ref = "cloudPaper" }
+
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutine" }
+
 mccoroutine-bukkit-api = { group = "com.github.shynixn.mccoroutine", name = "mccoroutine-bukkit-api", version.ref = "mccoroutine" }
 mccoroutine-bukkit-core = { group = "com.github.shynixn.mccoroutine", name = "mccoroutine-bukkit-core", version.ref = "mccoroutine" }
+
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
 
 [plugins]
 run-paper = { id = "xyz.jpenilla.run-paper", version = "2.3.1" }
 resource-factory = { id = "xyz.jpenilla.resource-factory", version = "1.2.0" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "2.1.0" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version = "2.1.0" }
-dokka = { id = "org.jetbrains.dokka", version = "2.0.0" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "2.1.20" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version = "2.1.20" }
 
 [bundles]
-commands = ["cloud", "cloudPaper", "cloud-annotations"]
+commands = ["cloud", "cloudPaper", "cloud-annotations", "cloud-kotlin-coroutines-annotations"]
 coroutines = ["mccoroutine-bukkit-api", "mccoroutine-bukkit-core" , "kotlinx-coroutines-core"]

@@ -1,4 +1,4 @@
-rootProject.name = "PluginTemplate" //TODO need to change
+rootProject.name = "Hardcore-support"
 
 pluginManagement {
     repositories {

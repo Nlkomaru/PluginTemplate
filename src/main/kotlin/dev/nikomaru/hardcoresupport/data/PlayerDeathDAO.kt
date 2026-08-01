@@ -1,10 +1,45 @@
 package dev.nikomaru.hardcoresupport.data
 
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
+import dev.nikomaru.hardcoresupport.HardcoreSupport
+import dev.nikomaru.hardcoresupport.utils.Utils
+import java.io.File
 import java.util.UUID
+import org.bukkit.Bukkit
 
 object PlayerDeathDAO {
+
+    private val dataFile: File
+        get() = HardcoreSupport.plugin.dataFolder.resolve("data.json")
+
+    /**
+     * データファイルを読み込む
+     * ファイルが存在しない場合は新規作成する
+     */
+    private fun loadData(): DeathData {
+        if (!dataFile.exists()) {
+            dataFile.parentFile.mkdirs()
+            dataFile.createNewFile()
+            val emptyData = DeathData()
+            dataFile.writeText(Utils.json.encodeToString(emptyData))
+            return emptyData
+        }
+        return Utils.json.decodeFromString<DeathData>(dataFile.readText())
+    }
+
+    /**
+     * データファイルに保存する
+     */
+    private fun saveData(data: DeathData) {
+        dataFile.writeText(Utils.json.encodeToString(data))
+    }
+
+    /**
+     * プレイヤーデータを取得または作成する
+     */
+    private fun getOrCreatePlayerData(playerUuid: UUID, data: DeathData): PlayerData {
+        return data.data.find { it.uuid == playerUuid }
+            ?: PlayerData(playerUuid, Bukkit.getOfflinePlayer(playerUuid).name, 0)
+    }
 
     /**
      * プレイヤーの死亡回数を取得する
@@ -12,11 +47,9 @@ object PlayerDeathDAO {
      * @return 死亡回数
      */
     fun getDeathCount(playerUuid: UUID): Int {
-        return transaction {
-            PlayerData.selectAll().where { PlayerData.playerUuid eq playerUuid }
-                .map { it[PlayerData.deathCount] }
-                .firstOrNull() ?: 0
-        }
+        val data = loadData()
+        val playerData = getOrCreatePlayerData(playerUuid, data)
+        return playerData.deaths
     }
 
     /**
@@ -25,27 +58,32 @@ object PlayerDeathDAO {
      * @return 更新後の死亡回数
      */
     fun incrementDeathCount(playerUuid: UUID): Int {
-        return transaction {
-            val currentCount = getDeathCount(playerUuid)
-            val newCount = currentCount + 1
+        val data = loadData()
+        val playerData = getOrCreatePlayerData(playerUuid, data)
+        val newDeaths = playerData.deaths + 1
+        
+        val newList = data.data.toMutableList()
+        newList.removeIf { it.uuid == playerUuid }
+        newList.add(playerData.copy(deaths = newDeaths))
+        
+        saveData(DeathData(ArrayList(newList)))
+        return newDeaths
+    }
 
-            val existingRow = PlayerData.selectAll().where { PlayerData.playerUuid eq playerUuid }.firstOrNull()
-
-            if (existingRow == null) {
-                // 新規プレイヤーの場合は挿入
-                PlayerData.insert {
-                    it[PlayerData.playerUuid] = playerUuid
-                    it[deathCount] = newCount
-                }
-            } else {
-                // 既存プレイヤーの場合は更新
-                PlayerData.update({ PlayerData.playerUuid eq playerUuid }) {
-                    it[deathCount] = newCount
-                }
-            }
-
-            newCount
-        }
+    /**
+     * プレイヤーの死亡回数を設定する
+     * @param playerUuid プレイヤーのUUID
+     * @param deaths 設定する死亡回数
+     */
+    fun setDeathCount(playerUuid: UUID, deaths: Int) {
+        val data = loadData()
+        val playerData = getOrCreatePlayerData(playerUuid, data)
+        
+        val newList = data.data.toMutableList()
+        newList.removeIf { it.uuid == playerUuid }
+        newList.add(playerData.copy(deaths = deaths))
+        
+        saveData(DeathData(ArrayList(newList)))
     }
 
     /**
@@ -53,32 +91,22 @@ object PlayerDeathDAO {
      * @param playerUuid プレイヤーのUUID
      */
     fun resetDeathCount(playerUuid: UUID) {
-        transaction {
-            PlayerData.update({ PlayerData.playerUuid eq playerUuid }) {
-                it[deathCount] = 0
-            }
-        }
+        setDeathCount(playerUuid, 0)
     }
 
     /**
      * 全プレイヤーの死亡データを取得する
-     * @return プレイヤーUUIDと死亡回数のマップ
+     * @return プレイヤーデータのリスト
      */
-    fun getAllDeathCounts(): Map<UUID, Int> {
-        return transaction {
-            PlayerData.selectAll()
-                .associate {
-                    it[PlayerData.playerUuid] to it[PlayerData.deathCount]
-                }
-        }
+    fun getAllDeathCounts(): ArrayList<PlayerData> {
+        val data = loadData()
+        return data.data
     }
 
     /**
      * 全プレイヤーの死亡データをリセットする
      */
     fun resetAllDeathCounts() {
-        transaction {
-            PlayerData.deleteAll()
-        }
+        saveData(DeathData())
     }
 }

@@ -1,6 +1,6 @@
 package dev.nikomaru.hardcoresupport.utils.coroutines
 
-import dev.nikomaru.hardcoresupport.Template
+import dev.nikomaru.hardcoresupport.HardcoreSupport
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.coroutines.CoroutineContext
 
@@ -14,7 +14,7 @@ object DispatcherContainer {
     val async: CoroutineContext
         get() {
             if (asyncCoroutine == null) {
-                asyncCoroutine = AsyncCoroutineDispatcher(JavaPlugin.getPlugin(Template::class.java))
+                asyncCoroutine = AsyncCoroutineDispatcher(JavaPlugin.getPlugin(HardcoreSupport::class.java))
             }
 
             return asyncCoroutine!!
@@ -26,7 +26,7 @@ object DispatcherContainer {
     val sync: CoroutineContext
         get() {
             if (syncCoroutine == null) {
-                syncCoroutine = MinecraftCoroutineDispatcher(JavaPlugin.getPlugin(Template::class.java))
+                syncCoroutine = MinecraftCoroutineDispatcher(JavaPlugin.getPlugin(HardcoreSupport::class.java))
             }
 
             return syncCoroutine!!
