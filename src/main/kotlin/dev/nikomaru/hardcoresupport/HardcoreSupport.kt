@@ -1,6 +1,6 @@
-package dev.nikomaru.template
+package dev.nikomaru.hardcoresupport
 
-import dev.nikomaru.template.commands.HelpCommand
+import dev.nikomaru.hardcoresupport.commands.HelpCommand
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.annotations.AnnotationParser
@@ -10,10 +10,10 @@ import org.incendo.cloud.setting.ManagerSetting
 import org.koin.core.context.GlobalContext
 import org.koin.dsl.module
 
-open class Template : JavaPlugin() {
+open class HardcoreSupport : JavaPlugin() {
 
     companion object {
-        lateinit var plugin: Template
+        lateinit var plugin: HardcoreSupport
             private set
     }
 
@@ -26,7 +26,7 @@ open class Template : JavaPlugin() {
 
     private fun setupKoin() {
         val appModule = module {
-            single<Template> { this@Template }
+            single<HardcoreSupport> { this@HardcoreSupport }
         }
 
         GlobalContext.getOrNull() ?: GlobalContext.startKoin {

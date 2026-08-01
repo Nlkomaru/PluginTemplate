@@ -1,4 +1,4 @@
-package dev.nikomaru.template.commands
+package dev.nikomaru.hardcoresupport.commands
 
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Command

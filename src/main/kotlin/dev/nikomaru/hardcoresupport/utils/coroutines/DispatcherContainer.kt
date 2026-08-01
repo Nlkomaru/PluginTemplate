@@ -1,6 +1,6 @@
-package dev.nikomaru.template.utils.coroutines
+package dev.nikomaru.hardcoresupport.utils.coroutines
 
-import dev.nikomaru.template.Template
+import dev.nikomaru.hardcoresupport.Template
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.coroutines.CoroutineContext
 
